@@ -1,0 +1,61 @@
+// App.js
+
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { fetchMovies } from './assets/services/api';
+
+export default function App() {
+  // Estado para armazenar os dados dos filmes
+  const [moviesData, setMoviesData] = useState([]);
+
+  // Efeito colateral para buscar os dados dos filmes ao carregar o componente
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Chamada à função fetchMovies que retorna os dados da API
+        const data = await fetchMovies();
+
+        // Atualiza o estado com os dados dos filmes
+        setMoviesData(data);
+      } catch (error) {
+        // Lida com erros, caso ocorram durante a chamada à API
+        console.log(error);
+      }
+    };
+
+    // Chama a função fetchData ao montar o componente (array de dependências vazio)
+    fetchData();
+  }, []); // Dependência vazia indica que o efeito colateral é executado apenas uma vez
+
+  // Componente React que renderiza a interface do usuário
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Movies</Text>
+      <View>
+        {moviesData.map((movie, index) => (
+          // Para cada filme, renderiza um bloco contendo o título e o ano
+          <View key={index}>
+            <Text>{movie.l}</Text> {/* Título do filme */}
+            <Text>Year: {movie.y}</Text> {/* Ano do filme */}
+            <Text>--------------------------</Text> {/* Separador visual */}
+          </View>
+        ))}
+      </View>
+    </View>
+  );
+}
+
+// Estilos para o componente React
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+});
